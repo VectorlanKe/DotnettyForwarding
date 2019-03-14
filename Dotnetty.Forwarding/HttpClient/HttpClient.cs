@@ -9,14 +9,14 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dotnetty.Forwarding
+namespace Dotnetty.Forwarding.HttpClient
 {
     public class HttpClient : IClient<DefaultFullHttpRequest>
     {
         private readonly IEventLoopGroup groupClient;
         private readonly Bootstrap bootstrapClient;
 
-        public HttpClient()
+        public HttpClient(Action<IFullHttpResponse> action)
         {
             groupClient = new DispatcherEventLoopGroup();
             bootstrapClient = new Bootstrap()
@@ -30,7 +30,7 @@ namespace Dotnetty.Forwarding
                     pipeline.AddLast(new HttpObjectAggregator(1024));
                     pipeline.AddLast(new HttpRequestEncoder());
                     pipeline.AddLast(new HttpContentDecompressor());//解压
-                    pipeline.AddLast(new HttpClientHandler());
+                    pipeline.AddLast(new HttpClientHandler(action));
                 }));
         }
 
@@ -41,7 +41,7 @@ namespace Dotnetty.Forwarding
 
         public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg)
         {
-            IChannel channel = await ConnectAsync(endPoint);
+            IChannel channel = await ConnectAsync(endPoint).ConfigureAwait(false);
             await channel.WriteAndFlushAsync(msg);
         }
 

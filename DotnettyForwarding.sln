@@ -3,7 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRun", "ConsoleRun\ConsoleRun.csproj", "{99386C87-3792-4F3E-9C5F-0CB1A8DA1FB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnetty.Forwarding", "Dotnetty.Forwarding\Dotnetty.Forwarding.csproj", "{6F30AB92-3C7C-4977-98F0-3A1A19F3CE1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDotnetty.Forwarding", "IDotnetty.Forwarding\IDotnetty.Forwarding.csproj", "{74623E41-1609-4B8F-8FE8-2B9B7885F110}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99386C87-3792-4F3E-9C5F-0CB1A8DA1FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99386C87-3792-4F3E-9C5F-0CB1A8DA1FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99386C87-3792-4F3E-9C5F-0CB1A8DA1FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99386C87-3792-4F3E-9C5F-0CB1A8DA1FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F30AB92-3C7C-4977-98F0-3A1A19F3CE1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F30AB92-3C7C-4977-98F0-3A1A19F3CE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F30AB92-3C7C-4977-98F0-3A1A19F3CE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F30AB92-3C7C-4977-98F0-3A1A19F3CE1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74623E41-1609-4B8F-8FE8-2B9B7885F110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74623E41-1609-4B8F-8FE8-2B9B7885F110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74623E41-1609-4B8F-8FE8-2B9B7885F110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74623E41-1609-4B8F-8FE8-2B9B7885F110}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

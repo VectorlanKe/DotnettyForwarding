@@ -8,15 +8,15 @@ namespace Dotnetty.Forwarding.HttpClient
 {
     public class HttpClientHandler : SimpleChannelInboundHandler<IFullHttpResponse>
     {
-        public Action<IFullHttpResponse> httpAction;
-        public HttpClientHandler(Action<IFullHttpResponse> action)
+        public Action<IFullHttpResponse> rollback;
+        public HttpClientHandler(Action<IFullHttpResponse> rollbackAction)
         {
-            httpAction = action;
+            rollback = rollbackAction;
         }
         public override bool IsSharable => true;
         protected override void ChannelRead0(IChannelHandlerContext ctx, IFullHttpResponse msg)
         {
-            httpAction(msg);
+            rollback(msg);
         }
     }
 }

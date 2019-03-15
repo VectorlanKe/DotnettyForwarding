@@ -16,7 +16,7 @@ namespace Dotnetty.Forwarding.HttpClient
         private readonly IEventLoopGroup groupClient;
         private readonly Bootstrap bootstrapClient;
 
-        public HttpClient(Action<IFullHttpResponse> action)
+        public HttpClient( Action<IFullHttpResponse> rollbackAction)
         {
             groupClient = new DispatcherEventLoopGroup();
             bootstrapClient = new Bootstrap()
@@ -30,7 +30,7 @@ namespace Dotnetty.Forwarding.HttpClient
                     pipeline.AddLast(new HttpObjectAggregator(1024));
                     pipeline.AddLast(new HttpRequestEncoder());
                     pipeline.AddLast(new HttpContentDecompressor());//解压
-                    pipeline.AddLast(new HttpClientHandler(action));
+                    pipeline.AddLast(new HttpClientHandler(rollbackAction));
                 }));
         }
 
@@ -41,7 +41,7 @@ namespace Dotnetty.Forwarding.HttpClient
 
         public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg)
         {
-            IChannel channel = await ConnectAsync(endPoint).ConfigureAwait(false);
+            IChannel channel = await ConnectAsync(endPoint);
             await channel.WriteAndFlushAsync(msg);
         }
 
@@ -64,7 +64,7 @@ namespace Dotnetty.Forwarding.HttpClient
             {
                 if (disposing)
                 {
-                    ShutdownGracefullyAsync();
+                    ShutdownGracefullyAsync().Wait();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。

@@ -1,4 +1,5 @@
-﻿using DotNetty.Transport.Bootstrapping;
+﻿using DotNetty.Codecs.Http;
+using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace IDotnetty.Forwarding
     public interface IClient<T>:IDisposable
     {
         
-        Task SendAsync(EndPoint endPoint, T msg);
+        Task SendAsync(EndPoint endPoint, T msg, Action<IChannelHandlerContext, IFullHttpResponse> rollback);
         Task ShutdownGracefullyAsync();
         Task ShutdownGracefullyAsync(TimeSpan quietPeriod, TimeSpan shutdownTimeout);
     }

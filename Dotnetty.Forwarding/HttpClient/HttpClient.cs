@@ -15,8 +15,8 @@ namespace Dotnetty.Forwarding.HttpClient
     {
         private readonly IEventLoopGroup groupClient;
         private readonly Bootstrap bootstrapClient;
-
-        public HttpClient( Action<IFullHttpResponse> rollbackAction)
+        private Dictionary<EndPoint, IChannel> channelDiction = new Dictionary<EndPoint, IChannel>();
+        public HttpClient()
         {
             groupClient = new DispatcherEventLoopGroup();
             bootstrapClient = new Bootstrap()
@@ -30,18 +30,31 @@ namespace Dotnetty.Forwarding.HttpClient
                     pipeline.AddLast(new HttpObjectAggregator(1024));
                     pipeline.AddLast(new HttpRequestEncoder());
                     pipeline.AddLast(new HttpContentDecompressor());//解压
-                    pipeline.AddLast(new HttpClientHandler(rollbackAction));
+                    pipeline.AddLast(new HttpClientHandler());
                 }));
         }
 
         private async Task<IChannel> ConnectAsync(EndPoint endPoint)
         {
+
+            //if (channelDiction.ContainsKey(endPoint))
+            //{
+            //    return channelDiction.GetValueOrDefault(endPoint);
+            //}
+            //else
+            //{
+            //    //ollbackAction = rollback;
+            //    IChannel channel = await bootstrapClient.ConnectAsync(endPoint);
+            //    channelDiction.Add(endPoint, channel);
+            //    return channel;
+            //}
             return await bootstrapClient.ConnectAsync(endPoint);
         }
 
-        public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg)
+        public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg, Action<IChannelHandlerContext, IFullHttpResponse> rollback)
         {
             IChannel channel = await ConnectAsync(endPoint);
+            channel.Pipeline.Get<HttpClientHandler>().rollback = rollback;
             await channel.WriteAndFlushAsync(msg);
         }
 

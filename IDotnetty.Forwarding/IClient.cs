@@ -12,7 +12,7 @@ namespace IDotnetty.Forwarding
     public interface IClient<T>:IDisposable
     {
         
-        Task SendAsync(EndPoint endPoint, T msg, Action<IChannelHandlerContext, IFullHttpResponse> rollback);
+        Task SendAsync(EndPoint endPoint, T msg, Action<IChannelHandlerContext, IFullHttpResponse> rollbackAction);
         Task ShutdownGracefullyAsync();
         Task ShutdownGracefullyAsync(TimeSpan quietPeriod, TimeSpan shutdownTimeout);
     }

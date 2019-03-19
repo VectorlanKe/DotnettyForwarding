@@ -1,5 +1,6 @@
 ﻿using DotNetty.Buffers;
 using DotNetty.Codecs.Http;
+using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,20 @@ namespace Dotnetty.Forwarding.HttpServer
     {
         public Action<IChannelHandlerContext, IFullHttpRequest> httpAction;
         public HttpServerHandler(Action<IChannelHandlerContext,IFullHttpRequest> action)
+            :base(false)
         {
             httpAction = action;
         }
-        protected async override void ChannelRead0(IChannelHandlerContext ctx, IFullHttpRequest msg)
+        protected override void ChannelRead0(IChannelHandlerContext ctx, IFullHttpRequest msg)
         {
-            //DefaultFullHttpResponse respon = new DefaultFullHttpResponse(DotNetty.Codecs.Http.HttpVersion.Http11, HttpResponseStatus.OK, Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes("hello")));
-            //await ctx.WriteAndFlushAsync(respon);
+            //byte[] test = Encoding.UTF8.GetBytes("hello");
+            //DefaultFullHttpResponse respon = new DefaultFullHttpResponse(HttpVersion.Http11, HttpResponseStatus.OK, Unpooled.WrappedBuffer(test));
+            //HttpHeaders headers = respon.Headers;
+            //headers.Set(HttpHeaderNames.ContentType, AsciiString.Cached("text/plain"));
+            //headers.Set(HttpHeaderNames.ContentLength, test.Length);
+            //ctx.WriteAndFlushAsync(respon);
             //await ctx.CloseAsync();
-            await Task.Run(()=>httpAction(ctx,msg));
+            httpAction(ctx,msg);
         }
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception) => context.CloseAsync();
 

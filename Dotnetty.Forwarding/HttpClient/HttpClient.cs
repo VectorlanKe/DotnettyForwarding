@@ -1,6 +1,7 @@
 ﻿using DotNetty.Codecs.Http;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Sockets;
 using DotNetty.Transport.Libuv;
 using IDotnetty.Forwarding;
 using System;
@@ -21,8 +22,8 @@ namespace Dotnetty.Forwarding.HttpClient
             groupClient = new DispatcherEventLoopGroup();
             bootstrapClient = new Bootstrap()
                 .Group(groupClient)
-                .Channel<TcpChannel>()
-                .Option(ChannelOption.SoBacklog, 8192)
+                .Channel<TcpSocketChannel>()
+                .Option(ChannelOption.TcpNodelay, true)
                 .Handler(new ActionChannelInitializer<IChannel>(channel =>
                 {
                     IChannelPipeline pipeline = channel.Pipeline;
@@ -30,7 +31,7 @@ namespace Dotnetty.Forwarding.HttpClient
                     pipeline.AddLast(new HttpObjectAggregator(1024));
                     pipeline.AddLast(new HttpRequestEncoder());
                     pipeline.AddLast(new HttpContentDecompressor());//解压
-                    pipeline.AddLast(new HttpClientHandler());
+                    //pipeline.AddLast(new HttpClientHandler(rollbackAction));
                 }));
         }
 
@@ -51,10 +52,10 @@ namespace Dotnetty.Forwarding.HttpClient
             return await bootstrapClient.ConnectAsync(endPoint);
         }
 
-        public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg, Action<IChannelHandlerContext, IFullHttpResponse> rollback)
+        public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg, Action<IChannelHandlerContext, IFullHttpResponse> rollbackAction)
         {
             IChannel channel = await ConnectAsync(endPoint);
-            channel.Pipeline.Get<HttpClientHandler>().rollback = rollback;
+            channel.Pipeline.AddLast(new HttpClientHandler(rollbackAction));
             await channel.WriteAndFlushAsync(msg);
         }
 

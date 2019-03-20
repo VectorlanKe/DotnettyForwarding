@@ -13,7 +13,7 @@ namespace IDotnetty.Forwarding
     {
         
         Task SendAsync(EndPoint endPoint, T msg, Action<IChannelHandlerContext, IFullHttpResponse> rollbackAction);
-        Task ShutdownGracefullyAsync();
-        Task ShutdownGracefullyAsync(TimeSpan quietPeriod, TimeSpan shutdownTimeout);
+        //Task ShutdownGracefullyAsync();
+        //Task ShutdownGracefullyAsync(TimeSpan quietPeriod, TimeSpan shutdownTimeout);
     }
 }

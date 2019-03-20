@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="dotnet-etcd" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Dotnetty.Forwarding\Dotnetty.Forwarding.csproj" />
   </ItemGroup>
 

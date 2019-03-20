@@ -1,4 +1,5 @@
 ﻿using DotNetty.Codecs.Http;
+using DotNetty.Common.Utilities;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
@@ -57,16 +58,7 @@ namespace Dotnetty.Forwarding.HttpClient
             IChannel channel = await ConnectAsync(endPoint);
             channel.Pipeline.AddLast(new HttpClientHandler(rollbackAction));
             await channel.WriteAndFlushAsync(msg);
-        }
-
-        public async Task ShutdownGracefullyAsync()
-        {
-            await groupClient.ShutdownGracefullyAsync();
-        }
-
-        public async Task ShutdownGracefullyAsync(TimeSpan quietPeriod, TimeSpan shutdownTimeout)
-        {
-            await groupClient.ShutdownGracefullyAsync(quietPeriod, shutdownTimeout);
+            msg.SafeRelease();
         }
 
         #region IDisposable Support
@@ -78,7 +70,9 @@ namespace Dotnetty.Forwarding.HttpClient
             {
                 if (disposing)
                 {
-                    ShutdownGracefullyAsync().Wait();
+                    channelDiction.Clear();
+                    bootstrapClient.Clone();
+                    groupClient.ShutdownGracefullyAsync();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。

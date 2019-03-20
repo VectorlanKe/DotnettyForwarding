@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dotnetty.Forwarding", "Dotn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDotnetty.Forwarding", "IDotnetty.Forwarding\IDotnetty.Forwarding.csproj", "{74623E41-1609-4B8F-8FE8-2B9B7885F110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnetty.Forwarding.Model", "Dotnetty.Forwarding.Model\Dotnetty.Forwarding.Model.csproj", "{BCDFD553-5FC8-42EA-98E3-1754EDCE3618}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dotnetty.Forwarding.Model", "Dotnetty.Forwarding.Model\Dotnetty.Forwarding.Model.csproj", "{BCDFD553-5FC8-42EA-98E3-1754EDCE3618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAPi", "TestAPi\TestAPi.csproj", "{F15F9F2B-04B8-49EF-B133-A3246247BD94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{BCDFD553-5FC8-42EA-98E3-1754EDCE3618}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCDFD553-5FC8-42EA-98E3-1754EDCE3618}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCDFD553-5FC8-42EA-98E3-1754EDCE3618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F15F9F2B-04B8-49EF-B133-A3246247BD94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F15F9F2B-04B8-49EF-B133-A3246247BD94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F15F9F2B-04B8-49EF-B133-A3246247BD94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F15F9F2B-04B8-49EF-B133-A3246247BD94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

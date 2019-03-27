@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dotnetty.Forwarding.Commonality\Dotnetty.Forwarding.Commonality.csproj" />
     <ProjectReference Include="..\Dotnetty.Forwarding\Dotnetty.Forwarding.csproj" />
   </ItemGroup>
 

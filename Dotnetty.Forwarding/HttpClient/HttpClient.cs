@@ -38,19 +38,19 @@ namespace Dotnetty.Forwarding.HttpClient
 
         private async Task<IChannel> ConnectAsync(EndPoint endPoint)
         {
-
-            //if (channelDiction.ContainsKey(endPoint))
-            //{
-            //    return channelDiction.GetValueOrDefault(endPoint);
-            //}
-            //else
-            //{
-            //    //ollbackAction = rollback;
-            //    IChannel channel = await bootstrapClient.ConnectAsync(endPoint);
-            //    channelDiction.Add(endPoint, channel);
-            //    return channel;
-            //}
-            return await bootstrapClient.ConnectAsync(endPoint);
+            IChannel channel=null;
+            if (channelDiction.ContainsKey(endPoint))
+            {
+                channel = channelDiction.GetValueOrDefault(endPoint);
+            }
+            //ollbackAction = rollback;
+            if (channel==null|| !channel.Open)
+            {
+                channel = await bootstrapClient.ConnectAsync(endPoint);
+                channelDiction[endPoint]= channel;
+            }
+            return channel;
+            //return await bootstrapClient.ConnectAsync(endPoint);
         }
 
         public async Task SendAsync(EndPoint endPoint, DefaultFullHttpRequest msg, Action<IChannelHandlerContext, IFullHttpResponse> rollbackAction)

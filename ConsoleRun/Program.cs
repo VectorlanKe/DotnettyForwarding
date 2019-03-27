@@ -1,4 +1,5 @@
 ﻿using dotnet_etcd;
+using Dotnetty.Forwarding.Commonality;
 using Dotnetty.Forwarding.HttpClient;
 using Dotnetty.Forwarding.HttpServer;
 using DotNetty.Buffers;
@@ -25,10 +26,11 @@ namespace ConsoleRun
         public static async Task RunServer()
         {
             HttpServer httpServer = null;
-            Random random = new Random();
-            HttpClient[] httpClients = new HttpClient[] {
-                new HttpClient(),new HttpClient(),new HttpClient(),new HttpClient(),new HttpClient(),
-            };
+            IDictionary<ulong, HttpClient> httpClients = new Dictionary<ulong, HttpClient>();
+            httpClients.Add(HashConsistent.Md5Hash("key1"), new HttpClient());
+            httpClients.Add(HashConsistent.Md5Hash("key2"), new HttpClient());
+            httpClients.Add(HashConsistent.Md5Hash("key3"), new HttpClient());
+            httpClients.Add(HashConsistent.Md5Hash("key4"), new HttpClient());
             EtcdClient etcdClient = new EtcdClient("127.0.0.1", 2379);
             HttpClient httpClient = new HttpClient();
             try
@@ -40,7 +42,8 @@ namespace ConsoleRun
                     {
                         //Console.WriteLine(request.Uri);
                         string urlStrs = Regex.Split(request.Uri, "(/\\d+)|\\?").FirstOrDefault();
-                        var urls = etcdClient.GetRangeVal($"{urlStrs?.ToLower()}#")?.ToList();
+                        //HashConsistent
+                        var urls = etcdClient.GetRangeVal($"{urlStrs?.ToLower()}#")?.ToDictionary(f=>HashConsistent.Md5Hash(f.Key),v=>v.Value);
                         if (urls.Count<1)
                         {
                             if (context.Channel.IsWritable)
@@ -53,13 +56,13 @@ namespace ConsoleRun
                             }
                             return;
                         }
-                        KeyValuePair<string, string> url = urls[random.Next(urls.Count)];
-                        Uri uri = new Uri($"{url.Value}{request.Uri.Replace(urlStrs,string.Empty)}");
+                        string urlStr = HashConsistent.GetTargetValues(urls, request.Uri);
+                        Uri uri = new Uri($"{urlStr}{request.Uri.Replace(urlStrs,string.Empty)}");
                         DefaultFullHttpRequest requestClient = new DefaultFullHttpRequest(HttpVersion.Http11, HttpMethod.Get, uri.ToString(), request.Content,request.Headers, request.Headers);
                         HttpHeaders headers = requestClient.Headers;
                         headers.Set(HttpHeaderNames.Host, uri.Authority);
-                        await httpClient.SendAsync(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port), requestClient,
-                        //await httpClients[random.Next(httpClients.Length)].SendAsync(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port), requestClient,
+                        //await httpClient.SendAsync(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port), requestClient,
+                        await HashConsistent.GetTargetValues(httpClients, urlStr).SendAsync(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port), requestClient,
                         async (contextClient, response) =>
                         {
                             DefaultFullHttpResponse respon = new DefaultFullHttpResponse(response.ProtocolVersion, response.Status, response.Content, response.Headers, response.Headers);
